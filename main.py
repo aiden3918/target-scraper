@@ -35,11 +35,9 @@ def buy():
     with open('info.json', 'r') as file:
         data = json.load(file)
 
-    # Launches a managed Chrome browser instance
+    # open chrome and go to target
     driver = webdriver.Chrome()
     driver.maximize_window()
-
-    # nav to target
     driver.get(data["target-link"])
 
     # check if in stock
@@ -56,21 +54,15 @@ def buy():
     # add to cart
     driver.execute_script("window.scrollBy(0, 500);")
     find_and_click_css_selector("button[id*='addToCartButtonOrTextIdFor']", driver)
-
-    # go to cart
     driver.get("https://www.target.com/cart")
 
     # sign in process
     find_and_click_text("//button[text()='Sign in to check out']", driver)
-
     find_and_enter_text_input_by_id(data["username"], "username", driver)
-
     find_and_click_id("login", driver)
 
     find_and_click_text("Enter your password", driver)
-
     find_and_enter_text_input_by_id(data["password"], "password", driver)
-
     find_and_click_text("//span[text()='Sign in to check out']", driver)
 
     # mobile phone authentication
@@ -89,14 +81,13 @@ def buy():
 
     # Enter payment information
     find_and_click_id("AddCreditDebitCellRadio", driver)
-
     find_and_click_id("save_card", driver)
     find_and_click_id("save-as-default-payment-checkbox", driver)
 
-    find_and_enter_text_input_by_id("", "", driver)
-    find_and_enter_text_input_by_id("", "", driver)
-    find_and_enter_text_input_by_id("", "", driver)
-    find_and_enter_text_input_by_id("", "", driver)
+    find_and_enter_text_input_by_id(data["card-number"], "", driver)
+    find_and_enter_text_input_by_id(data["expiration"], "", driver)
+    find_and_enter_text_input_by_id(data["cvv"], "", driver)
+    find_and_enter_text_input_by_id(data["name-on-card"], "", driver)
 
     # Enter billing address
 

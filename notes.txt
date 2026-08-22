@@ -2,3 +2,5 @@ try pickup first
 if no pickup, then shipping?
 
 flush out pickup first
+
+pyinstaller --onefile --collect-submodules=selenium --collect-data selenium main.py
