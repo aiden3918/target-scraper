@@ -1,0 +1,4 @@
+try pickup first
+if no pickup, then shipping?
+
+flush out pickup first
