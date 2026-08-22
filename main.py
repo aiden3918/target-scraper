@@ -6,21 +6,44 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import json
 
-def process():
+def find_and_click_id(id_input, driver):
+    btn = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, id_input))
+    )
+    ActionChains(driver).click(btn).perform()
+
+def find_and_click_text(x_path_input, driver):
+    btn = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, x_path_input))
+    )
+    ActionChains(driver).click(btn).perform()
+
+def find_and_click_css_selector(css_input, driver):
+    btn = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, css_input))
+    )
+    ActionChains(driver).click(btn).perform()
+
+def find_and_enter_text_input_by_id(text_input, element_id, driver):
+    input = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, element_id))
+    )
+    input.send_keys(text_input)
+
+def buy():
+    # read credentials in json
     with open('info.json', 'r') as file:
         data = json.load(file)
 
-    link = data["target-link"]
-    user = data["username"]
-    pw = data["password"]
-
     # Launches a managed Chrome browser instance
     driver = webdriver.Chrome()
+    driver.maximize_window()
 
     # nav to target
-    driver.get(link)
+    driver.get(data["target-link"])
 
     # check if in stock
+    # DEBUG: fix later
     try:
         in_stock = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CLASS_NAME, "h-text-greenDark"))
@@ -31,39 +54,62 @@ def process():
         driver.quit()
 
     # add to cart
-    add_to_cart_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "button[id*='addToCartButtonOrTextIdFor']"))
-    )
-    ActionChains(driver).click(add_to_cart_button).perform()
+    driver.execute_script("window.scrollBy(0, 500);")
+    find_and_click_css_selector("button[id*='addToCartButtonOrTextIdFor']", driver)
 
     # go to cart
     driver.get("https://www.target.com/cart")
 
     # sign in process
-    sign_in_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[text()='Sign in to check out']"))
-    )
-    ActionChains(driver).click(sign_in_button).perform()
+    find_and_click_text("//button[text()='Sign in to check out']", driver)
 
-    user_input = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "username"))
-    )
-    user_input.send_keys(user)
+    find_and_enter_text_input_by_id(data["username"], "username", driver)
 
-    log_in_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[text()='Sign in to check out']"))
-    )
-    ActionChains(driver).click(log_in_button).perform()
+    find_and_click_id("login", driver)
+
+    find_and_click_text("Enter your password", driver)
+
+    find_and_enter_text_input_by_id(data["password"], "password", driver)
+
+    find_and_click_text("//span[text()='Sign in to check out']", driver)
+
+    # mobile phone authentication
+    try:
+        find_and_click_text("//a[text()='Skip']", driver)
+        print("Skipped mobile phone authentication")
+    except:
+        print("Mobile phone authentication does not exist. Continuing...")
+
+    # birthday (why is this even a thing)
+    try:
+        find_and_click_id("EnrollmentMaybeLaterButton", driver)
+        print("Skipped birthday input")
+    except:
+        print("Birthday input does not exist. Continuing...")
+
+    # Enter payment information
+    find_and_click_id("AddCreditDebitCellRadio", driver)
+
+    find_and_click_id("save_card", driver)
+    find_and_click_id("save-as-default-payment-checkbox", driver)
+
+    find_and_enter_text_input_by_id("", "", driver)
+    find_and_enter_text_input_by_id("", "", driver)
+    find_and_enter_text_input_by_id("", "", driver)
+    find_and_enter_text_input_by_id("", "", driver)
+
+    # Enter billing address
 
     # Wait to see the results, then close the browser safely
     time.sleep(1000)
     driver.quit()
 
 if __name__ == '__main__':
-    process()
+    buy()
 
 # addToCartButtonOrTextIdFor94881673
 # addToCartButtonOrTextIdFor15023951
 # styles_btn__zZcJr styles_ndsButton__VgXft styles_md__N9Usy styles_filled__uq68y styles_fullWidth__ztP_d
 # Sign in to check out
 # username
+# https://www.target.com/p/mesh-binder-pouch-up-up/-/A-1011020920?preselect=94881673#lnk=sametab
