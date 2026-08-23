@@ -7,3 +7,22 @@ add spam redundacy (doesnt go to next step until sure that button has been click
 flush out pickup first
 
 pyinstaller --onefile --collect-submodules=selenium --collect-data selenium main.py
+
+{
+    "username": "liaiden3918@gmail.com",
+    "password": "Lebronisthegoat23$",
+    "target-link": "https://www.target.com/p/sharpened-2-wood-pencils-up-up-153/-/A-53713860?preselect=15023951#lnk=sametab",
+
+    "card-number": "1111222233334444",
+    "expiration": "12/34",
+    "cvv": "123",
+    "name-on-card": "aodfpasj",
+
+    "address-line-1": "9920 Valley Blvd",
+    "address-line-2": "1st floor",
+    "zip-code": "91731",
+    "city": "El Monte",
+    "state": "California",
+    "phone": "1234567890"
+}
+

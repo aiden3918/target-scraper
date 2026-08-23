@@ -2,33 +2,51 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, ElementNotInteractableException
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import json
 
 def find_and_click_id(id_input, driver, maxWait=10):
-    btn = WebDriverWait(driver, 10).until(
+    btn = WebDriverWait(driver, maxWait).until(
         EC.element_to_be_clickable((By.ID, id_input))
     )
     ActionChains(driver).click(btn).perform()
+    return btn
 
 def find_and_click_text(x_path_input, driver, maxWait=10):
-    btn = WebDriverWait(driver, 10).until(
+    btn = WebDriverWait(driver, maxWait).until(
         EC.element_to_be_clickable((By.XPATH, x_path_input))
     )
     ActionChains(driver).click(btn).perform()
+    return btn
 
 def find_and_click_css_selector(css_input, driver, maxWait=10):
-    btn = WebDriverWait(driver, 10).until(
+    btn = WebDriverWait(driver, maxWait).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, css_input))
     )
     ActionChains(driver).click(btn).perform()
+    return btn
 
 def find_and_enter_text_input_by_id(text_input, element_id, driver, maxWait=10):
-    input = WebDriverWait(driver, 10).until(
+    input = WebDriverWait(driver, maxWait).until(
         EC.element_to_be_clickable((By.ID, element_id))
     )
     input.send_keys(text_input)
+
+def spam_click_button(input_button, end_condition, driver, clickDelay=0.1):
+    while True:
+        try:
+            # if end condition found, stop
+            if WebDriverWait(driver, clickDelay).until(EC.presence_of_element_located(end_condition)):
+                break
+        except TimeoutException:
+            # no end condition: keep clicking
+            try:
+                button = driver.find_element(*input_button)
+                button.click()
+            except ElementNotInteractableException:
+                pass
 
 def buy():
     # read credentials in json
