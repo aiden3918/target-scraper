@@ -6,25 +6,25 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import json
 
-def find_and_click_id(id_input, driver):
+def find_and_click_id(id_input, driver, maxWait=10):
     btn = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, id_input))
     )
     ActionChains(driver).click(btn).perform()
 
-def find_and_click_text(x_path_input, driver):
+def find_and_click_text(x_path_input, driver, maxWait=10):
     btn = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, x_path_input))
     )
     ActionChains(driver).click(btn).perform()
 
-def find_and_click_css_selector(css_input, driver):
+def find_and_click_css_selector(css_input, driver, maxWait=10):
     btn = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, css_input))
     )
     ActionChains(driver).click(btn).perform()
 
-def find_and_enter_text_input_by_id(text_input, element_id, driver):
+def find_and_enter_text_input_by_id(text_input, element_id, driver, maxWait=10):
     input = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, element_id))
     )
@@ -52,18 +52,21 @@ def buy():
         driver.quit()
 
     # add to cart
-    driver.execute_script("window.scrollBy(0, 500);")
+    driver.execute_script("window.scrollBy(0, 650);")
+    time.sleep(0.5)
     find_and_click_css_selector("button[id*='addToCartButtonOrTextIdFor']", driver)
     driver.get("https://www.target.com/cart")
 
     # sign in process
     find_and_click_text("//button[text()='Sign in to check out']", driver)
+
     find_and_enter_text_input_by_id(data["username"], "username", driver)
     find_and_click_id("login", driver)
 
-    find_and_click_text("Enter your password", driver)
+    find_and_click_text("//span[text()='Enter your password']", driver)
+
     find_and_enter_text_input_by_id(data["password"], "password", driver)
-    find_and_click_text("//span[text()='Sign in to check out']", driver)
+    find_and_click_text("//button[text()='Sign in with password']", driver)
 
     # mobile phone authentication
     try:
@@ -80,16 +83,30 @@ def buy():
         print("Birthday input does not exist. Continuing...")
 
     # Enter payment information
-    find_and_click_id("AddCreditDebitCellRadio", driver)
-    find_and_click_id("save_card", driver)
-    find_and_click_id("save-as-default-payment-checkbox", driver)
+    find_and_click_id("AddCreditDebitCellRadio", driver, 3)
+    find_and_click_id("saveCard", driver)
 
-    find_and_enter_text_input_by_id(data["card-number"], "", driver)
-    find_and_enter_text_input_by_id(data["expiration"], "", driver)
-    find_and_enter_text_input_by_id(data["cvv"], "", driver)
-    find_and_enter_text_input_by_id(data["name-on-card"], "", driver)
+    find_and_enter_text_input_by_id(data["card-number"], "credit-card-number-input", driver)
+    find_and_enter_text_input_by_id(data["expiration"], "credit-card-expiration-input", driver)
+    find_and_enter_text_input_by_id(data["cvv"], "credit-card-cvv-input", driver)
+    find_and_enter_text_input_by_id(data["name-on-card"], "credit-card-name-input", driver)
 
-    # Enter billing address
+    find_and_enter_text_input_by_id(data["address-line-1"], "billing-address-first-name-input", driver)
+    # address line 2 if needed
+    if data["address-line-2"] != "":
+        find_and_click_text("//button[text()='+ Address line 2']", driver)
+        find_and_enter_text_input_by_id(data["address-line-2"], "billing-address-line2-input", driver)
+
+    find_and_enter_text_input_by_id(data["zip-code"], "billing-address-zip-code-input", driver)
+    find_and_enter_text_input_by_id(data["city"], "billing-address-city-input", driver)
+    # state should autocomplete
+    find_and_enter_text_input_by_id(data["phone"], "billing-address-phone-input", driver)
+
+    find_and_click_text("//button[text()='Save and continue']", driver)
+
+    # place order
+    time.sleep(0.5)
+    # find_and_click_text("//button[text()='Place your order']", driver)
 
     # Wait to see the results, then close the browser safely
     time.sleep(1000)

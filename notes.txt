@@ -1,5 +1,8 @@
 try pickup first
 if no pickup, then shipping?
+need to spam click buttons for them to work
+add spam redundacy (doesnt go to next step until sure that button has been clicked)
+    - shorten wait time, add a loop
 
 flush out pickup first
 

@@ -6,8 +6,13 @@
     "card-number": "1111222233334444",
     "expiration": "12/34",
     "cvv": "123",
-    "name-on-card": "aodfpasj"
+    "name-on-card": "aodfpasj",
 
-    
+    "address-line-1": "9920 Valley Blvd",
+    "address-line-2": "1st floor",
+    "zip-code": "91731",
+    "city": "El Monte",
+    "state": "California",
+    "phone": "1234567890"
 }
 
