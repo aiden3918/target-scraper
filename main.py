@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, ElementNotInteractableException
 from selenium.webdriver.common.action_chains import ActionChains
+from pathlib import Path
 import time
 import json
 
@@ -137,8 +138,8 @@ def buy():
 
     # place order
     time.sleep(0.5)
-    # place_order_btn = find_text("//button[text()='Place your order']", driver)
-    # spam_click_button(place_order_btn, (By.XPATH, "//h1[text()='Thanks for your order!']"))
+    place_order_btn = find_text("//button[text()='Place your order']", driver)
+    spam_click_button(place_order_btn, (By.XPATH, "//h1[text()='Thanks for your order!']"))
 
     # Wait to see the results, then close the browser safely
     print("Order successfully placed; check email for confirmation details")
