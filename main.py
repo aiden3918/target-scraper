@@ -71,9 +71,12 @@ def buy():
         driver.quit()
 
     # choose pickup, delivery, or shipping
-    purchase_option_str = "//span[text()='" + data["purchase-type"].capitalize() + "']"
-    purchase_option_btn = find_text(purchase_option_str, driver)
-    ActionChains(driver).click(purchase_option_btn).perform()
+    try:
+        purchase_option_str = "//span[text()='" + data["purchase-type"].capitalize() + "']"
+        purchase_option_btn = find_text(purchase_option_str, driver, 3)
+        ActionChains(driver).click(purchase_option_btn).perform()
+    except:
+        print("No choices. Shipping automatically chosen.")
 
     # add to cart
     driver.execute_script("window.scrollBy(0, 650);")
