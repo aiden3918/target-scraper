@@ -90,6 +90,14 @@ def buy():
     check_out_btn = find_text("//button[text()='Sign in to check out']", driver)
     spam_click_button(check_out_btn, (By.ID, "login"), driver)
 
+    # sometimes, can only ship with orders over $35
+    if data["purchase-type"].capitalize() == "Shipping":
+        try:
+            not_shippable_text = find_text("//h3[text()='Only ships with $35 orders]", driver, 2)
+            print("Not shippable; item has to be worth at least $35; ending process")
+        except:
+            print("Item is shippable. Continuing...")
+
     find_and_enter_text_input_by_id(data["username"], "username", driver)
     submit_user_btn = find_id("login", driver)
     spam_click_button(submit_user_btn, (By.XPATH, "//span[text()='Enter your password']"), driver)
